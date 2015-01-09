@@ -1,5 +1,4 @@
-class Player
-{
+class Player extends GameObject{
   PVector pos;
   char up;
   char down;
@@ -10,12 +9,14 @@ class Player
   char button2;
   int index;
   color colour;
+  float gravity = 0.6f;
     
-  Player()
-  {
+  Player(){
+    this.w = 20;
+    this.h = 20;
+    this.speed = 3;
     pos = new PVector(width / 2, height / 2);
   }
-  
   Player(int index, color colour, char up, char down, char left, char right, char start, char button1, char button2)
   {
     this();
@@ -44,23 +45,23 @@ class Player
         );
   }
   
+  
+  void display()
+  {    
+    stroke(colour);
+    fill(colour);    
+    rect(pos.x, pos.y, w, h);
+  } 
+  
   void update()
   {
-    if (checkKey(up))
-    {
-      pos.y -= 1;
-    }
-    if (checkKey(down))
-    {
-      pos.y += 1;
-    }
     if (checkKey(left))
     {
-      pos.x -= 1;
+      pos.x -= speed;
     }    
     if (checkKey(right))
     {
-      pos.x += 1;
+      pos.x += speed;
     }
     if (checkKey(start))
     {
@@ -72,14 +73,9 @@ class Player
     }
     if (checkKey(button2))
     {
-      println("Player " + index + " butt2");
+      println("Player " + index + " button 2");
     }    
   }
   
-  void display()
-  {    
-    stroke(colour);
-    fill(colour);    
-    rect(pos.x, pos.y, 20, 20);
-  }  
+   
 }
