@@ -1,6 +1,6 @@
 /* Use this class for creating buttons */
 
-class Button extends Splashscreen{
+class Button extends Splashscreen {
   
   PImage image;
   String imagename;

@@ -1,4 +1,4 @@
-class Player extends GameObject{
+class Player extends GameObject {
   PVector pos;
   char up;
   char down;
@@ -9,13 +9,15 @@ class Player extends GameObject{
   char button2;
   int index;
   color colour;
-  float gravity = 0.6f;
+  PImage image;
     
   Player(){
-    this.w = 20;
-    this.h = 20;
+    this.theta = 0;
     this.speed = 3;
-    pos = new PVector(width / 2, height / 2);
+    this.pos = new PVector(width / 2, height / 2);
+    this.h = 20;
+    this.w = 20;
+    this.theta = 0;
   }
   Player(int index, color colour, char up, char down, char left, char right, char start, char button1, char button2)
   {
@@ -46,33 +48,48 @@ class Player extends GameObject{
   }
   
   
-  void display()
-  {    
+  void display(){
+    
+    float halfWidth = w / 2;
+    float halfHeight = h /2;
+    
+    pushMatrix();
+    translate(pos.x, pos.y);
+    rotate(theta);  
+    
     stroke(colour);
-    fill(colour);    
-    rect(pos.x, pos.y, w, h);
+    fill(colour);
+
+    line(-halfWidth, halfHeight, 0, - halfHeight);
+    line(0, - halfHeight, halfWidth, halfWidth);
+    line(halfWidth, halfHeight, 0, 0);
+    line(0,0,  - halfWidth, halfHeight);    
+    
+    popMatrix();
+    
   } 
   
-  void update()
-  {
-    if (checkKey(left))
-    {
-      pos.x -= speed;
+  void update() {
+    if (checkKey(left)) {
+      theta -= 0.1f;
     }    
-    if (checkKey(right))
-    {
-      pos.x += speed;
+    if (checkKey(right)) {
+      theta += 0.1f;
     }
-    if (checkKey(start))
-    {
+    if(checkKey(up)) {
+      //pos.y -= speed;
+    }
+    if(checkKey(down)) {
+      //pos.y += speed;
+    }
+    if (checkKey(start)){
       println("Player " + index + " start");
     }
-    if (checkKey(button1))
-    {
-      println("Player " + index + " button 1");
+    if (checkKey(button1)) { 
+         Bullet bullet = new Bullet(pos.x, pos.y, objects.get(0).theta);
+         objects.add(bullet);
     }
-    if (checkKey(button2))
-    {
+    if (checkKey(button2)) {
       println("Player " + index + " button 2");
     }    
   }

@@ -30,7 +30,7 @@ Button startGameButton;
 void setup()
 { 
   background(0);
-  size(900, 500);
+  size(700, 700);
   
   float buttonIndent = ((width/2) - (110));
   minim = new Minim(this);
@@ -77,17 +77,28 @@ void splashScreen(){
 
 void gameRunning(){
   fill(0);
-  background(255);
+  background(0);
+  
   for(int i = 0; i < objects.size(); i++){
     objects.get(i).update();
     objects.get(i).display();
-  }
-  
-  line(0, 300, 0, 300);
+    objects.get(i).move();
+    
+    // Check to see if bullet is dead.
+    if(objects.get(i).isAlive()){
+      println("Bullet is dead");
+      objects.remove(i);
+    }
+  }  
 }
 
 void gameOver(){
 }
+
+
+
+
+
 
 void keyPressed() {
   keys[keyCode] = true;
@@ -124,15 +135,13 @@ void setUpPlayerControllers(){
   XML[] children = xml.getChildren("player");
   int gap = width / (children.length + 1);
   
-  for(int i = 0 ; i < children.length ; i ++) {
+  for(int i = 0 ; i < children.length - 1 ; i ++) {
     XML playerXML = children[i];
     Player p = new Player(
             i
             , color(random(0, 255), random(0, 255), random(0, 255))
             , playerXML);
     int x = (i + 1) * gap;
-    p.pos.x = x;
-    p.pos.y = 300;
    objects.add(p);         
   }
 }
