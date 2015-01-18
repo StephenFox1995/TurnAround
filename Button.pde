@@ -54,7 +54,7 @@ class Button extends Splashscreen {
   boolean hover(){
     if(mouseX > pos.x && mouseX < (pos.x + w) &&
        mouseY > pos.y && mouseY < (pos.y + h)) {
-         println("dd");
+   
          image = loadImage(imageNameOnHover);
          image(image, pos.x, pos.y);
          return true;

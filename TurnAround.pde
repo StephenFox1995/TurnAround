@@ -60,7 +60,7 @@ void draw()
   
 }
 
-// Display the splashscreen.
+// Display the splashscreen
 void splashScreen(){
   for (int i = 0; i < splashscreenItems.size(); i++){
     splashscreenItems.get(i).display();
@@ -75,10 +75,12 @@ void splashScreen(){
   
 }
 
+// Implement gameplay here
 void gameRunning(){
   fill(0);
   background(0);
-  
+  Enemy enemy = new Enemy();
+  objects.add(enemy);
   for(int i = 0; i < objects.size(); i++){
     objects.get(i).update();
     objects.get(i).display();
