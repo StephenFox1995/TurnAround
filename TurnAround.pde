@@ -18,14 +18,20 @@ ArrayList<GameObject> objects = new ArrayList<GameObject>();
 ArrayList<Splashscreen> splashscreenItems = new ArrayList<Splashscreen>();
 
 boolean[] keys = new boolean[526];
+
 float centX;
 float centY;
+
 boolean splashScreen = true;
 boolean startGame;
 boolean gameOver;
 
+int enemyCount;
+
+Difficulty difficulty;
 
 Button startGameButton;
+
 
 void setup()
 { 
@@ -68,35 +74,63 @@ void splashScreen(){
     
     
     if(splashscreenItems.get(0).clicked()){
+      
+      difficulty = Difficulty.Easy;
+      setupEnemies(difficulty);
+      
+      // Set difficulty
       splashScreen = false;
       startGame = true;
+      
     }
   }
   
 }
-
+int count = 0;
 // Implement gameplay here
 void gameRunning(){
   fill(0);
   background(0);
-  Enemy enemy = new Enemy();
-  objects.add(enemy);
+  
   for(int i = 0; i < objects.size(); i++){
     objects.get(i).update();
     objects.get(i).display();
     objects.get(i).move();
     
-    // Check to see if bullet is dead.
-    if(objects.get(i).isAlive()){
-      println("Bullet is dead");
+    if((objects.get(i) instanceof Enemy) && !objects.get(i).alive){
       objects.remove(i);
+      count++;
+      println("Enemy " + count  + " Removed");
     }
+   
   }  
 }
 
 void gameOver(){
 }
 
+// Create specific number of enemies
+// depending on the difficulty.
+void setupEnemies(Difficulty difficulty){
+ 
+  switch (difficulty){
+    case Easy:
+      enemyCount = 10;
+      break;
+      
+    case Medium:
+      enemyCount = 20;
+      break;
+      
+    case Hard:
+      enemyCount = 30;
+      break;
+  }
+  for(int i = 0; i < enemyCount; i++){
+    objects.add(new Enemy());
+  }
+  
+}
 
 
 

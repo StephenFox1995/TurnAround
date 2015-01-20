@@ -5,7 +5,7 @@ class GameObject{
   color colour;
   float speed;
   float theta;
-  boolean alive;
+  boolean alive = false;
  
   void display(){
   }
@@ -17,6 +17,6 @@ class GameObject{
   }
   
   boolean isAlive(){
-    return false;
+    return alive;
   }
 }

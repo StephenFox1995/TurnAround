@@ -2,53 +2,71 @@
  * upon intilisation it is randomly chosen for the
  * enemy which direction they will spawn.
  * i.e. spawn and enter game area from north, south
- * easr, west.
+ * east, west.
  */
-
 class Enemy extends GameObject{
   
-  int random = (int)random(0, 200);
   int sideToSpawn;
-  String directionToMove = "";
+  String directionToMove = ""; // Direction to move will always be opposite of sideToSpawn
   
   Enemy() {  
+    this.speed = 5.0f;
+    this.alive = true;
     
-    // Determines the side the enemy will spawn.
-    // Mod by four as theres only four possiblities.
-    sideToSpawn = random % 4;
-    
+    // set spawn
+    setupSpawnOrigin();
+  }
+  
+  private void setupSpawnOrigin(){
+    // Determine the side the enemy will spawn
+    sideToSpawn = (int)random(0, 4);
+    println(sideToSpawn);
     
     switch(sideToSpawn){
-      //0 - Top
+      //0 - North
       case 0:
         // Setup left spawn;
-        println("NORTH");
         this.pos = new PVector(random(w, width), random(-height * 2, 0));
         directionToMove = "South";
         break;
      
-     //1 - Right   
+     //1 - East   
      case 1:
-       println("EAST");
        this.pos = new PVector(random(width, width *2), random(h, height));
        directionToMove = "West";
        break;
      
+     //2 - South
      case 2:
-       println("SOUTH");
        this.pos = new PVector(random(w, width), random(height, height* 2));
        directionToMove = "North";
        break;
-       
+     
+     //3 - West
      case 3:
-     println("WEST");
      this.pos = new PVector(random(-width*2, 0), random(h, height));
      directionToMove = "East";
      break;
-      
     }
   }
   
+  void update(){
+    // If offscreen, kill!
+    if (directionToMove == "South" && pos.y > height) {
+      kill();
+    } else if(directionToMove == "North" && pos.y < 0){
+      kill();
+    } else if (directionToMove == "East" && pos.x > width) {
+      kill();
+    } else if(directionToMove == "West" && pos.x < 0) {
+      kill();
+    }
+  }
+  
+  
+  void kill(){
+    alive = false;
+  }
   
   void display(){
     pushMatrix();
@@ -61,15 +79,22 @@ class Enemy extends GameObject{
   void move(){
     
     if(directionToMove == "South") {
-      pos.y++;
+      pos.y += speed;
     } else if (directionToMove == "North") {
-      pos.y--;
+      pos.y -= speed;
     } else if(directionToMove == "East") {
-      pos.x++;
+      pos.x += speed;
     } else if(directionToMove == "West") {
-      pos.x--;
+      pos.x -= speed;
     }
-    
+  }
+  
+  boolean isAlive(){
+    if (alive){
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

@@ -1,9 +1,9 @@
 class Bullet extends GameObject{
-  PVector forward = new PVector(0,-1);
+  PVector forward;
   
   Bullet(float x, float y, float theta) {
     this.pos = new PVector(x, y);
-    this.speed = 10.0f;
+    this.speed = 200.0f;
     this.theta = theta;
     this.alive = true;
   }
@@ -21,8 +21,7 @@ class Bullet extends GameObject{
       alive = false;
     }
     
-    forward.x = sin(theta);
-    forward.y = -cos(theta);
+    forward = new PVector(sin(theta), -cos(theta));
     
     PVector velocity = PVector.mult(forward, speed);
     pos.add(forward);
@@ -37,6 +36,10 @@ class Bullet extends GameObject{
   }
   
   boolean isAlive(){
-    return alive;
+    if (alive){
+      return true;
+    } else {
+      return false;
+    }
   }
 }

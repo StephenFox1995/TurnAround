@@ -12,6 +12,7 @@ class Player extends GameObject {
   PImage image;
     
   Player(){
+    this.alive = true;
     this.theta = 0;
     this.speed = 3;
     this.pos = new PVector(width / 2, height / 2);
@@ -19,6 +20,7 @@ class Player extends GameObject {
     this.w = 20;
     this.theta = 0;
   }
+  
   Player(int index, color colour, char up, char down, char left, char right, char start, char button1, char button2)
   {
     this();
@@ -94,5 +96,8 @@ class Player extends GameObject {
     }    
   }
   
+  boolean isAlive(){
+    return alive;
+  }
    
 }
