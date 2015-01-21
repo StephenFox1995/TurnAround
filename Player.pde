@@ -10,6 +10,10 @@ class Player extends GameObject {
   int index;
   color colour;
   PImage image;
+  
+  float fireRate = 10.0f;
+  float ellapsed = 0.0f;
+  float toPass = 1.0f / fireRate;
     
   Player(){
     this.alive = true;
@@ -88,7 +92,10 @@ class Player extends GameObject {
       println("Player " + index + " start");
     }
     if (checkKey(button1)) { 
-         Bullet bullet = new Bullet(pos.x, pos.y, objects.get(0).theta);
+         
+         Bullet bullet = new Bullet(pos.x, 
+                                    pos.y, 
+                                    objects.get(0).theta);
          objects.add(bullet);
     }
     if (checkKey(button2)) {

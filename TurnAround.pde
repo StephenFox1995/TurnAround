@@ -1,3 +1,18 @@
+/*
+ ** DT228/2 Object Orientated Programming Assignment
+ ** See: https://github.com/StephenFox1995/TurnAround
+ ** ==============================================
+ ** - Author: Stephen Fox
+ ** - Student No: C13475462
+ ** - Email: c13475462@mydit.ie
+ ** - GitHub: https://github.com/StephenFox1995
+ **   
+ ** - Forked from: https://github.com/skooter500/Assignment2StarterCode
+ **   
+ ** - Note: Changed project name from Assignment2StarterCode to TurnAround
+ **   
+*/
+
 import ddf.minim.spi.*;
 import ddf.minim.signals.*;
 import ddf.minim.*;
@@ -5,13 +20,6 @@ import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
-/*
-    DIT OOP Assignment 2 Starter Code
-    =================================
-    
-    Loads player properties from an xml file
-    See: https://github.com/skooter500/DT228-OOP 
-*/
 
 Minim minim;
 ArrayList<GameObject> objects = new ArrayList<GameObject>();
@@ -26,7 +34,8 @@ boolean splashScreen = true;
 boolean startGame;
 boolean gameOver;
 
-int enemyCount;
+Score score = new Score("Score:", 0);
+
 
 Difficulty difficulty;
 
@@ -35,6 +44,7 @@ Button startGameButton;
 
 void setup()
 { 
+
   background(0);
   size(700, 700);
   
@@ -49,12 +59,11 @@ void setup()
   startGameButton.imageNameOnHover= "Images/Splashscreen/buttonOnHover.png";
   splashscreenItems.add(startGameButton);
   
-  
+  objects.add(score);
 }
 
 void draw()
 { 
-  
   if(splashScreen){
     splashScreen();
   } else if(startGame) {
@@ -62,8 +71,6 @@ void draw()
   } else if( gameOver){
     gameOver();
   }
-  
-  
 }
 
 // Display the splashscreen
@@ -81,12 +88,11 @@ void splashScreen(){
       // Set difficulty
       splashScreen = false;
       startGame = true;
-      
     }
   }
   
 }
-int count = 0;
+
 // Implement gameplay here
 void gameRunning(){
   fill(0);
@@ -96,13 +102,16 @@ void gameRunning(){
     objects.get(i).update();
     objects.get(i).display();
     objects.get(i).move();
+    println(objects.size());
     
-    if((objects.get(i) instanceof Enemy) && !objects.get(i).alive){
-      objects.remove(i);
-      count++;
-      println("Enemy " + count  + " Removed");
+    if(objects.get(i) instanceof Enemy && !objects.get(i).alive){
+      objects.get(i).respawn();
     }
-   
+    
+    if(objects.get(i) instanceof Bullet && !objects.get(i).alive){
+      objects.remove(i);
+    }
+    
   }  
 }
 
@@ -112,7 +121,9 @@ void gameOver(){
 // Create specific number of enemies
 // depending on the difficulty.
 void setupEnemies(Difficulty difficulty){
- 
+  
+  int enemyCount = 0;
+  
   switch (difficulty){
     case Easy:
       enemyCount = 10;
@@ -125,11 +136,18 @@ void setupEnemies(Difficulty difficulty){
     case Hard:
       enemyCount = 30;
       break;
+    
+    default:
+      enemyCount = 0;
+      break;
   }
+  
+  // Create the amount of enemies
+  // according to difficulty and
+  // add to arraylist
   for(int i = 0; i < enemyCount; i++){
     objects.add(new Enemy());
   }
-  
 }
 
 

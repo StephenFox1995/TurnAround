@@ -1,9 +1,12 @@
 class Bullet extends GameObject{
   PVector forward;
+  float toLive = 5.0f;
+  
   
   Bullet(float x, float y, float theta) {
+    this.colour = color(255, 80, 80);
     this.pos = new PVector(x, y);
-    this.speed = 200.0f;
+    this.speed = 20.0f;
     this.theta = theta;
     this.alive = true;
   }
@@ -21,14 +24,24 @@ class Bullet extends GameObject{
       alive = false;
     }
     
-    forward = new PVector(sin(theta), -cos(theta));
-    
-    PVector velocity = PVector.mult(forward, speed);
+    forward = new PVector(sin(theta) * speed, -cos(theta) * speed);
     pos.add(forward);
+  }
+  
+  void update() {
+    if(pos.x > width || pos.x < 0 || pos.y > height || pos.y < 0){
+      kill();  
+    }
+  }
+  
+  void kill() {
+    alive = false;
   }
   
   void display(){
     pushMatrix();
+    fill(colour);
+    stroke(colour);
     translate(pos.x, pos.y);
     rotate(theta);
     line(0, -5, 0, 5);

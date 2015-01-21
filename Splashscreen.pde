@@ -13,8 +13,9 @@ class Splashscreen{
   boolean hover(){
     return false;
   }
-   boolean clicked(){
-      return false;
+  
+  boolean clicked(){
+     return false;
    }
 }
 

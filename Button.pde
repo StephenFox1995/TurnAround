@@ -9,8 +9,6 @@ class Button extends Splashscreen {
   boolean buttonClicked = false;
   boolean playSoundOnClick = false;
   
-  
-  
   AudioPlayer audioPlayer;
   AudioInput input;
   

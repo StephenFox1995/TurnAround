@@ -5,18 +5,22 @@ class GameObject{
   color colour;
   float speed;
   float theta;
-  boolean alive = false;
- 
-  void display(){
+  boolean alive;
+  float timeDelta = 1.0f/ 60.0f;
+  
+  void display() {
   }
  
-  void update(){
+  void update() {
   }
   
-  void move(){
+  void move() {
+  }
+  
+  void respawn() {
   }
   
   boolean isAlive(){
-    return alive;
+    return false;
   }
 }

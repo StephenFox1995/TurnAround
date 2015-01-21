@@ -9,7 +9,8 @@ class Enemy extends GameObject{
   int sideToSpawn;
   String directionToMove = ""; // Direction to move will always be opposite of sideToSpawn
   
-  Enemy() {  
+  Enemy() {
+    this.colour = color(255); 
     this.speed = 5.0f;
     this.alive = true;
     
@@ -20,13 +21,12 @@ class Enemy extends GameObject{
   private void setupSpawnOrigin(){
     // Determine the side the enemy will spawn
     sideToSpawn = (int)random(0, 4);
-    println(sideToSpawn);
     
     switch(sideToSpawn){
       //0 - North
       case 0:
         // Setup left spawn;
-        this.pos = new PVector(random(w, width), random(-height * 2, 0));
+        this.pos = new PVector(random(w, width - 2), random(-height * 2, 0));
         directionToMove = "South";
         break;
      
@@ -38,7 +38,7 @@ class Enemy extends GameObject{
      
      //2 - South
      case 2:
-       this.pos = new PVector(random(w, width), random(height, height* 2));
+       this.pos = new PVector(random(w, width - w), random(height, height* 2));
        directionToMove = "North";
        break;
      
@@ -50,7 +50,7 @@ class Enemy extends GameObject{
     }
   }
   
-  void update(){
+  void update() {
     // If offscreen, kill!
     if (directionToMove == "South" && pos.y > height) {
       kill();
@@ -63,6 +63,11 @@ class Enemy extends GameObject{
     }
   }
   
+  // Respawns enemy to new co-ordinates
+  void respawn() {
+    alive = true;
+    setupSpawnOrigin();
+  }
   
   void kill(){
     alive = false;
@@ -70,6 +75,8 @@ class Enemy extends GameObject{
   
   void display(){
     pushMatrix();
+    fill(colour);
+    stroke(colour);
     translate(pos.x, pos.y);
     rotate(theta);
     ellipse(10, 10, 10, 10);
