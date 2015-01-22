@@ -1,4 +1,4 @@
-class Splashscreen{
+class SplashScreen{
   
   PVector pos;
   float w;

@@ -1,12 +1,13 @@
 /* Use this class for creating buttons */
 
-class Button extends Splashscreen {
+class Button extends SplashScreen {
   
   PImage image;
   String imagename;
   String imageNameOnHover;
+  PVector textPos;
+  boolean changeImageOnHover;
   
-  boolean buttonClicked = false;
   boolean playSoundOnClick = false;
   
   AudioPlayer audioPlayer;
@@ -32,16 +33,15 @@ class Button extends Splashscreen {
      image(image, pos.x, pos.y);
   }
   
+  
   boolean clicked() {
     if(mouseX > pos.x && mouseX < (pos.x + w) &&
        mouseY > pos.y && mouseY < (pos.y + h) && 
        mousePressed){
-          buttonClicked = true;
           
           if(playSoundOnClick){
             playSound();
           }
-          
           return true;
      }
      else {
@@ -52,14 +52,18 @@ class Button extends Splashscreen {
   boolean hover(){
     if(mouseX > pos.x && mouseX < (pos.x + w) &&
        mouseY > pos.y && mouseY < (pos.y + h)) {
-   
-         image = loadImage(imageNameOnHover);
-         image(image, pos.x, pos.y);
-         return true;
-       }
-       else {
-          return false;
-       }
+         if(changeImageOnHover){
+           image = loadImage(imageNameOnHover);
+           image(image, pos.x, pos.y);
+           return true;
+         }
+         else {
+           return true;
+         }
+    }
+    else {
+      return false;
+    }
        
     }
 }

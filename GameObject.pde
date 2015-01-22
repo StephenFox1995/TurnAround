@@ -7,6 +7,7 @@ class GameObject{
   float theta;
   boolean alive;
   float timeDelta = 1.0f/ 60.0f;
+  float health;
   
   void display() {
   }

@@ -6,16 +6,16 @@ class Score extends GameObject {
   String[] scoreFromFile;
   
   Score(){
-    this("Score:", 0);
+    this(0, 0, "Score:", 0);
   }
   
-  Score(String title, int value) {
-    this.pos = new PVector(550 , 20);
+  Score(float x, float y, String title, int value) {
+    this.pos = new PVector(x , y);
     this.colour = color(255);
     this.scoreValue = value;
     this.title = title;
     
-    // Title is the title you give it and the actual score value given
+    // ScoreText is the title you give it and the actual score value given
     this.scoreText = title + " " + scoreValue;
   }
   
@@ -32,6 +32,12 @@ class Score extends GameObject {
   void changeScore(int amount){
     scoreValue = scoreValue + amount;
     scoreText = title + " " + scoreValue;
+  }
+  
+  void setPosition(float x, float y) {
+    pos.x = x;
+    pos.y = y;
+    
   }
   
   void readScoreFromFile(String filename) {
@@ -121,8 +127,7 @@ class Score extends GameObject {
     else if(currentOS.toLowerCase().contains("mac")) {
         String user = System.getProperty("user.name");
         filePath = "/Users/" + user + "/Library/TurnAround/";     
-    } 
-    
+    }
     // Return the filepath we want to access
     return filePath;
   }

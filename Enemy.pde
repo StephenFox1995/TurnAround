@@ -11,10 +11,10 @@ class Enemy extends GameObject{
   
   Enemy() {
     this.colour = color(255); 
-    this.speed = 5.0f;
+    this.speed = 2.0f;
     this.alive = true;
     
-    // set spawn
+    // Set spawn
     setupSpawnOrigin();
   }
   

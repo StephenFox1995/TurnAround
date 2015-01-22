@@ -23,7 +23,7 @@ import ddf.minim.effects.*;
 
 Minim minim;
 ArrayList<GameObject> objects = new ArrayList<GameObject>();
-ArrayList<Splashscreen> splashscreenItems = new ArrayList<Splashscreen>();
+ArrayList<SplashScreen> splashScreenItems = new ArrayList<SplashScreen>();
 
 boolean[] keys = new boolean[526];
 
@@ -34,33 +34,39 @@ boolean splashScreen = true;
 boolean startGame;
 boolean gameOver;
 
-Score score = new Score("Score:", 0);
+Score score = new Score();
 
+PImage splashScreenTitle;
 
 Difficulty difficulty;
 
-Button startGameButton;
+boolean devMode = true;
 
+boolean sketchFullScreen() {
+  return !devMode;
+}
 
-void setup()
-{ 
+void setup() {
+ 
+ if(devMode) {
+    size(800, 800);
+  } else {
+    size(displayWidth, displayHeight);
+  } 
 
-  background(0);
-  size(700, 700);
+  background(0);  
   
-  float buttonIndent = ((width/2) - (110));
   minim = new Minim(this);
   centX = width /2;
   centY = height/2;
   
   setUpPlayerControllers();
+  setUpSplashScreenAttributes();
   
-  startGameButton = new Button(buttonIndent, centY, "Images/Splashscreen/button.png");
-  startGameButton.imageNameOnHover= "Images/Splashscreen/buttonOnHover.png";
-  splashscreenItems.add(startGameButton);
-  
+  score.setPosition(width * 0.8f, height * 0.05f);
   objects.add(score);
 }
+
 
 void draw()
 { 
@@ -75,19 +81,29 @@ void draw()
 
 // Display the splashscreen
 void splashScreen(){
-  for (int i = 0; i < splashscreenItems.size(); i++){
-    splashscreenItems.get(i).display();
-    splashscreenItems.get(i).hover();
+  
+  image(splashScreenTitle, centX -255, 50);
+  for (int i = 0; i < splashScreenItems.size(); i++){
     
+    splashScreenItems.get(i).display();
+    splashScreenItems.get(i).hover();
     
-    if(splashscreenItems.get(0).clicked()){
-      
+    if(splashScreenItems.get(0).clicked()) {
       difficulty = Difficulty.Easy;
       setupEnemies(difficulty);
-      
-      // Set difficulty
-      splashScreen = false;
-      startGame = true;
+      startGame();
+    }
+    if(splashScreenItems.get(1).clicked()) {
+      difficulty = Difficulty.Medium;
+      setupEnemies(difficulty);
+      startGame();
+    
+    }
+    
+    if(splashScreenItems.get(2).clicked()) {
+      difficulty = Difficulty.Hard;
+      setupEnemies(difficulty);
+      startGame();
     }
   }
   
@@ -95,8 +111,22 @@ void splashScreen(){
 
 // Implement gameplay here
 void gameRunning(){
-  fill(0);
+  fill(255);
   background(0);
+  
+  switch(difficulty) {
+    case Easy:
+      text("Easy", width * 0.05, 20);
+      break;
+      
+    case Medium:
+      text("Medium", width * 0.05, 20);
+      break;
+    
+    case Hard:
+      text("Medium", width * 0.05, 20);
+      break;
+  }
   
   for(int i = 0; i < objects.size(); i++){
     objects.get(i).update();
@@ -117,6 +147,35 @@ void gameRunning(){
 
 void gameOver(){
 }
+
+void startGame() {
+  // Remove splash screen and start game
+  splashScreen = false;
+  startGame = true;
+}
+
+void setUpSplashScreenAttributes() {
+  
+  Button startGameButton;
+  Button mediumGameButton;
+  Button hardGameButton;
+  
+  float buttonIndent = (centX - 110);
+  splashScreenTitle = loadImage("Images/Splashscreen/TurnAround.png");
+  
+  startGameButton = new Button(buttonIndent, height * 0.3f, "Images/Splashscreen/EasyButton.png");
+  startGameButton.imageNameOnHover = "Images/Splashscreen/EasyHover.png";
+  splashScreenItems.add(startGameButton);
+  
+  mediumGameButton = new Button(buttonIndent, height * 0.4f, "Images/Splashscreen/MediumButton.png");
+  mediumGameButton.imageNameOnHover = "Images/SplashScreen/MediumHover.png";
+  splashScreenItems.add(mediumGameButton);
+  
+  hardGameButton = new Button(buttonIndent, height * 0.5f, "Images/Splashscreen/HardButton.png");
+  hardGameButton.imageNameOnHover = "Images/SplashScreen/HardHover.png";
+  splashScreenItems.add(hardGameButton);
+}
+
 
 // Create specific number of enemies
 // depending on the difficulty.
@@ -195,7 +254,7 @@ void setUpPlayerControllers(){
             i
             , color(random(0, 255), random(0, 255), random(0, 255))
             , playerXML);
-    int x = (i + 1) * gap;
+    
    objects.add(p);         
   }
 }
