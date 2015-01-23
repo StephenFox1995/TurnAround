@@ -4,7 +4,7 @@ class Bullet extends GameObject{
   
   
   Bullet(float x, float y, float theta) {
-    this.colour = color(255, 80, 80);
+    this.colour = color(255, 0, 255);
     this.pos = new PVector(x, y);
     this.speed = 20.0f;
     this.theta = theta;

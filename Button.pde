@@ -2,12 +2,12 @@
 
 class Button extends SplashScreen {
   
-  PImage image;
+  PImage[] image = new PImage[2];
   String imagename;
   String imageNameOnHover;
   PVector textPos;
   boolean changeImageOnHover;
-  
+  boolean hoverOver;
   boolean playSoundOnClick = false;
   
   AudioPlayer audioPlayer;
@@ -15,9 +15,24 @@ class Button extends SplashScreen {
   
   Button(float x, float y, String imagename){
     this.pos = new PVector(x, y);
-    this.image = loadImage(imagename);
+    this.image[0] = loadImage(imagename);
     this.w = 220;
     this.h = 47;
+  }
+  
+  void display() {
+    if(hoverOver && changeImageOnHover){
+      image(image[1], pos.x, pos.y);
+      
+    } else {
+      image(image[0], pos.x, pos.y);
+    }   
+  }
+  
+  // Sets an image when mouse hovers over the button.
+  void setImageOnHover(String imageName) {
+    changeImageOnHover = true;
+    image[1] = loadImage(imageName);
   }
   
   // Sets sound for button click
@@ -28,11 +43,6 @@ class Button extends SplashScreen {
   void playSound() {
     audioPlayer.play();
   }
-  
-  void display() {
-     image(image, pos.x, pos.y);
-  }
-  
   
   boolean clicked() {
     if(mouseX > pos.x && mouseX < (pos.x + w) &&
@@ -52,18 +62,13 @@ class Button extends SplashScreen {
   boolean hover(){
     if(mouseX > pos.x && mouseX < (pos.x + w) &&
        mouseY > pos.y && mouseY < (pos.y + h)) {
-         if(changeImageOnHover){
-           image = loadImage(imageNameOnHover);
-           image(image, pos.x, pos.y);
-           return true;
-         }
-         else {
-           return true;
-         }
+         hoverOver = true;
+         return true;
     }
     else {
+      hoverOver = false;
       return false;
     }
        
-    }
+  }
 }

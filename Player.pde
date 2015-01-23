@@ -27,11 +27,11 @@ class Player extends GameObject {
     this.theta = 0;
   }
   
-  Player(int index, color colour, char up, char down, char left, char right, char start, char button1, char button2)
+  Player(int index, char up, char down, char left, char right, char start, char button1, char button2)
   {
     this();
+    this.colour = color(125,125,125);
     this.index = index;
-    this.colour = colour;
     this.up = up;
     this.down = down;
     this.left = left;
@@ -41,10 +41,9 @@ class Player extends GameObject {
     this.button2 = button2;
   }
   
-  Player(int index, color colour, XML xml)
+  Player(int index, XML xml)
   {
     this(index
-        , colour
         , buttonNameToKey(xml, "up")
         , buttonNameToKey(xml, "down")
         , buttonNameToKey(xml, "left")
@@ -82,7 +81,6 @@ class Player extends GameObject {
   
   // Displays players health bar
   void displayHealthBar() {
-    
     pushMatrix();
     translate(width * 0.05, height * 0.05);
     stroke(0, 255, 0);
@@ -94,7 +92,12 @@ class Player extends GameObject {
   
   // Decrease amount from heatlh bar
   void decreaseHealthBar(float amount) {
-    healthBarLength = healthBarLength - (healthBarLength * 0.5);
+    health -= amount;
+    if (healthBarLength <=0){
+      healthBarLength = healthBarLength;
+    } else {
+      healthBarLength -= amount;
+    }
   }
   
   void update() {
@@ -117,7 +120,7 @@ class Player extends GameObject {
     }
     if (checkKey(button1)) { 
          if(ellapsed > toPass) {
-         
+           decreaseHealthBar(6);
            Bullet bullet = new Bullet(pos.x, 
                                       pos.y, 
                                       objects.get(0).theta);

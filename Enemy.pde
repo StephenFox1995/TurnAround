@@ -4,6 +4,7 @@
  * i.e. spawn and enter game area from north, south
  * east, west.
  */
+
 class Enemy extends GameObject{
   
   int sideToSpawn;

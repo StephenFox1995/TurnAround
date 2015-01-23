@@ -82,7 +82,7 @@ void draw()
 // Display the splashscreen
 void splashScreen(){
   
-  image(splashScreenTitle, centX -255, 50);
+  image(splashScreenTitle, centX - 255, 50);
   for (int i = 0; i < splashScreenItems.size(); i++){
     
     splashScreenItems.get(i).display();
@@ -97,9 +97,7 @@ void splashScreen(){
       difficulty = Difficulty.Medium;
       setupEnemies(difficulty);
       startGame();
-    
     }
-    
     if(splashScreenItems.get(2).clicked()) {
       difficulty = Difficulty.Hard;
       setupEnemies(difficulty);
@@ -116,15 +114,15 @@ void gameRunning(){
   
   switch(difficulty) {
     case Easy:
-      text("Easy", width * 0.05, 20);
+      text("EASY", width * 0.05, 20);
       break;
       
     case Medium:
-      text("Medium", width * 0.05, 20);
+      text("MEDIUM", width * 0.05, 20);
       break;
     
     case Hard:
-      text("Medium", width * 0.05, 20);
+      text("HARD", width * 0.05, 20);
       break;
   }
   
@@ -161,18 +159,19 @@ void setUpSplashScreenAttributes() {
   Button hardGameButton;
   
   float buttonIndent = (centX - 110);
+  
   splashScreenTitle = loadImage("Images/Splashscreen/TurnAround.png");
   
   startGameButton = new Button(buttonIndent, height * 0.3f, "Images/Splashscreen/EasyButton.png");
-  startGameButton.imageNameOnHover = "Images/Splashscreen/EasyHover.png";
+  startGameButton.setImageOnHover("Images/Splashscreen/EasyHover.png");
   splashScreenItems.add(startGameButton);
   
   mediumGameButton = new Button(buttonIndent, height * 0.4f, "Images/Splashscreen/MediumButton.png");
-  mediumGameButton.imageNameOnHover = "Images/SplashScreen/MediumHover.png";
+  mediumGameButton.setImageOnHover("Images/SplashScreen/MediumHover.png");
   splashScreenItems.add(mediumGameButton);
   
   hardGameButton = new Button(buttonIndent, height * 0.5f, "Images/Splashscreen/HardButton.png");
-  hardGameButton.imageNameOnHover = "Images/SplashScreen/HardHover.png";
+  hardGameButton.setImageOnHover("Images/SplashScreen/HardHover.png");
   splashScreenItems.add(hardGameButton);
 }
 
@@ -250,10 +249,8 @@ void setUpPlayerControllers(){
   
   for(int i = 0 ; i < children.length - 1 ; i ++) {
     XML playerXML = children[i];
-    Player p = new Player(
-            i
-            , color(random(0, 255), random(0, 255), random(0, 255))
-            , playerXML);
+    
+    Player p = new Player(i, playerXML);
     
    objects.add(p);         
   }
