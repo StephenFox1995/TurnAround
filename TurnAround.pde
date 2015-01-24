@@ -33,10 +33,10 @@ float centY;
 boolean splashScreen = true;
 boolean startGame;
 boolean gameOver;
+PImage splashScreenTitle;
 
 Score score = new Score();
 
-PImage splashScreenTitle;
 
 Difficulty difficulty;
 
@@ -62,6 +62,7 @@ void setup() {
   
   setUpPlayerControllers();
   setUpSplashScreenAttributes();
+  setupPowerUps();
   
   score.setPosition(width * 0.8f, height * 0.05f);
   objects.add(score);
@@ -130,7 +131,6 @@ void gameRunning(){
     objects.get(i).update();
     objects.get(i).display();
     objects.get(i).move();
-    println(objects.size());
     
     if(objects.get(i) instanceof Enemy && !objects.get(i).alive){
       objects.get(i).respawn();
@@ -139,7 +139,6 @@ void gameRunning(){
     if(objects.get(i) instanceof Bullet && !objects.get(i).alive){
       objects.remove(i);
     }
-    
   }  
 }
 
@@ -204,8 +203,15 @@ void setupEnemies(Difficulty difficulty){
   // according to difficulty and
   // add to arraylist
   for(int i = 0; i < enemyCount; i++){
+    println(enemyCount);
     objects.add(new Enemy());
   }
+}
+
+
+void setupPowerUps() {
+  PowerUp powerUp = new PowerUp("Images/Game/powerup.png");
+  objects.add(powerUp);
 }
 
 
@@ -250,8 +256,7 @@ void setUpPlayerControllers(){
   for(int i = 0 ; i < children.length - 1 ; i ++) {
     XML playerXML = children[i];
     
-    Player p = new Player(i, playerXML);
-    
+    Player p = new Player(0, "Images/Game/heart.bmp", playerXML);
    objects.add(p);         
   }
 }
