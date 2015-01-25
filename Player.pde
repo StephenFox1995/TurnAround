@@ -22,12 +22,12 @@ class Player extends GameObject {
     this.theta = 0;
     this.speed = 3;
     this.pos = new PVector(width / 2, height / 2);
-    this.h = 20;
-    this.w = 20;
+    this.radius = 20;
     this.theta = 0;
+     
   }
   
-  Player(int index, char up, char down, char left, char right, char start, char button1, char button2)
+  Player(int index, char up, char down, char left, char right, char start, char button1, char button2, String imageName)
   {
     this();
     this.colour = color(125,125,125);
@@ -39,9 +39,10 @@ class Player extends GameObject {
     this.start = start;
     this.button1 = button1;
     this.button2 = button2;
+    this.image = loadImage(imageName);
   }
   
-  Player(int index, XML xml)
+  Player(int index, String imageName, XML xml)
   {
     this(index
         , buttonNameToKey(xml, "up")
@@ -51,14 +52,13 @@ class Player extends GameObject {
         , buttonNameToKey(xml, "start")
         , buttonNameToKey(xml, "button1")
         , buttonNameToKey(xml, "button2")
+        , imageName
         );
   }
   
   
   void display(){
     
-    float halfWidth = w / 2;
-    float halfHeight = h /2;
     displayHealthBar();
     
     pushMatrix();
@@ -70,15 +70,14 @@ class Player extends GameObject {
     strokeWeight(1);
     fill(colour);
 
-    line(-halfWidth, halfHeight, 0, - halfHeight);
-    line(0, - halfHeight, halfWidth, halfWidth);
-    line(halfWidth, halfHeight, 0, 0);
-    line(0,0,  - halfWidth, halfHeight);
-        
+    //image(image, pos.x, pos.y);
+    rect(pos.x, pos.y, 10, 10);    
     popMatrix();
     
-  } 
+  }
   
+  
+ 
   // Displays players health bar
   void displayHealthBar() {
     pushMatrix();
@@ -88,6 +87,13 @@ class Player extends GameObject {
     line(0, 0, healthBarLength, 0);
     popMatrix();
     
+  }
+  
+  boolean hitEnemy(GameObject object) {
+    float distance = PVector.dist(object.pos, pos);
+    println("unce");
+    return(distance < object.radius + radius);
+
   }
   
   // Decrease amount from heatlh bar
@@ -120,7 +126,7 @@ class Player extends GameObject {
     }
     if (checkKey(button1)) { 
          if(ellapsed > toPass) {
-           decreaseHealthBar(6);
+           
            Bullet bullet = new Bullet(pos.x, 
                                       pos.y, 
                                       objects.get(0).theta);
@@ -134,7 +140,11 @@ class Player extends GameObject {
   }
   
   boolean isAlive(){
-    return alive;
+    if(alive) {
+      return true;
+    } else {
+      return false;
+    }
   }
    
 }

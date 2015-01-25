@@ -29,7 +29,7 @@ class Score extends GameObject {
   void update() {
   }
   
-  void changeScore(int amount){
+  void updateScore(int amount){
     scoreValue = scoreValue + amount;
     scoreText = title + " " + scoreValue;
   }

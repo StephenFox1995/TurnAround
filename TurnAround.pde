@@ -127,18 +127,54 @@ void gameRunning(){
       break;
   }
   
-  for(int i = 0; i < objects.size(); i++){
+  for(int i = 0; i < objects.size() - 1; i++){
+    
     objects.get(i).update();
     objects.get(i).display();
     objects.get(i).move();
     
-    if(objects.get(i) instanceof Enemy && !objects.get(i).alive){
-      objects.get(i).respawn();
+    if(objects.get(i) instanceof Enemy){
+      if(!objects.get(i).alive) {
+        objects.get(i).respawn();
+      }
     }
     
-    if(objects.get(i) instanceof Bullet && !objects.get(i).alive){
-      objects.remove(i);
+    
+    if(objects.get(i) instanceof Bullet){
+      if(!objects.get(i).alive) {
+        objects.remove(i);
+      }
+      
+      // Hit detection between bullets and enemy.
+      for(int j = 0; j < objects.size(); j++){
+        
+        if(objects.get(j) instanceof Enemy) {
+          if(objects.get(i).collides(objects.get(j))) {
+            
+            objects.get(j).respawn();
+            score.updateScore(10);
+          }
+        }
+      } 
     }
+    
+    
+    if(objects.get(i) instanceof Player) {
+      
+      // Hit detection between player and enemy
+      for(int j = 0; j < objects.size(); j++) { 
+        if(objects.get(j) instanceof Enemy) {
+               
+          if(objects.get(i).hitEnemy(objects.get(j))) {
+            objects.get(i).decreaseHealthBar(5);
+            
+          }
+        }
+      }
+    }
+    
+    
+    
   }  
 }
 
@@ -203,7 +239,6 @@ void setupEnemies(Difficulty difficulty){
   // according to difficulty and
   // add to arraylist
   for(int i = 0; i < enemyCount; i++){
-    println(enemyCount);
     objects.add(new Enemy());
   }
 }
@@ -256,7 +291,7 @@ void setUpPlayerControllers(){
   for(int i = 0 ; i < children.length - 1 ; i ++) {
     XML playerXML = children[i];
     
-    Player p = new Player(0, "Images/Game/heart.bmp", playerXML);
+    Player p = new Player(0, "Images/Game/Player.png", playerXML);
    objects.add(p);         
   }
 }

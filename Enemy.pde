@@ -8,61 +8,63 @@
 class Enemy extends GameObject{
   
   int sideToSpawn;
-  String directionToMove = ""; // Direction to move will always be opposite of sideToSpawn
+  Direction directionToMove;
   
   Enemy() {
     this.colour = color(255); 
     this.speed = 2.0f;
     this.alive = true;
+    this.radius = 10;
     
     // Set spawn
     setupSpawnOrigin();
   }
   
-  private void setupSpawnOrigin(){
+  void setupSpawnOrigin(){
     // Determine the side the enemy will spawn
     sideToSpawn = (int)random(0, 4);
     
     switch(sideToSpawn){
       //0 - North
       case 0:
-        // Setup left spawn;
         this.pos = new PVector(random(w, width - 2), random(-height * 2, 0));
-        directionToMove = "South";
+        directionToMove = Direction.South;
         break;
      
      //1 - East   
      case 1:
        this.pos = new PVector(random(width, width *2), random(h, height));
-       directionToMove = "West";
+       directionToMove = Direction.West;
        break;
      
      //2 - South
      case 2:
        this.pos = new PVector(random(w, width - w), random(height, height* 2));
-       directionToMove = "North";
+       directionToMove = Direction.North;
        break;
      
      //3 - West
      case 3:
      this.pos = new PVector(random(-width*2, 0), random(h, height));
-     directionToMove = "East";
+     directionToMove = Direction.East;
      break;
     }
   }
   
   void update() {
     // If offscreen, kill!
-    if (directionToMove == "South" && pos.y > height) {
+    if (directionToMove == Direction.South && pos.y > height) {
       kill();
-    } else if(directionToMove == "North" && pos.y < 0){
+    } else if(directionToMove == Direction.North && pos.y < 0){
       kill();
-    } else if (directionToMove == "East" && pos.x > width) {
+    } else if (directionToMove == Direction.East && pos.x > width) {
       kill();
-    } else if(directionToMove == "West" && pos.x < 0) {
+    } else if(directionToMove == Direction.West && pos.x < 0) {
       kill();
     }
   }
+  
+  
   
   // Respawns enemy to new co-ordinates
   void respawn() {
@@ -80,19 +82,19 @@ class Enemy extends GameObject{
     stroke(colour);
     translate(pos.x, pos.y);
     rotate(theta);
-    ellipse(10, 10, 10, 10);
+    ellipse(0, 0, radius, radius);
     popMatrix();
   }
   
   void move(){
     
-    if(directionToMove == "South") {
+    if(directionToMove == Direction.South) {
       pos.y += speed;
-    } else if (directionToMove == "North") {
+    } else if (directionToMove == Direction.North) {
       pos.y -= speed;
-    } else if(directionToMove == "East") {
+    } else if(directionToMove == Direction.East) {
       pos.x += speed;
-    } else if(directionToMove == "West") {
+    } else if(directionToMove == Direction.North) {
       pos.x -= speed;
     }
   }
