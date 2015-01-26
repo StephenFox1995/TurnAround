@@ -10,6 +10,7 @@ class Button extends SplashScreen {
   boolean hoverOver;
   boolean playSoundOnClick = false;
   
+  
   AudioPlayer audioPlayer;
   AudioInput input;
   
@@ -18,15 +19,27 @@ class Button extends SplashScreen {
     this.image[0] = loadImage(imagename);
     this.w = 220;
     this.h = 47;
+    this.hidden = false;
   }
   
   void display() {
-    if(hoverOver && changeImageOnHover){
-      image(image[1], pos.x, pos.y);
+    if(!hidden) {
+    
+      if(hoverOver && changeImageOnHover){
+        image(image[1], pos.x, pos.y);
       
-    } else {
-      image(image[0], pos.x, pos.y);
-    }   
+      } else {
+        image(image[0], pos.x, pos.y);
+      }
+    } 
+  }
+  
+  void setToHidden() {
+    hidden = true;
+  }
+  
+  void setToUnHidden() {
+    hidden = false;
   }
   
   // Sets an image when mouse hovers over the button.
@@ -48,11 +61,19 @@ class Button extends SplashScreen {
     if(mouseX > pos.x && mouseX < (pos.x + w) &&
        mouseY > pos.y && mouseY < (pos.y + h) && 
        mousePressed){
+        // Check if hidden. Disable clicking functionality
+        // if hidden. 
+        if(!hidden) {
           
-          if(playSoundOnClick){
-            playSound();
-          }
-          return true;
+            if(playSoundOnClick){
+              playSound();
+            }
+            
+            return true;
+        }
+        else {
+          return false;
+        }
      }
      else {
           return false;
