@@ -141,7 +141,10 @@ void gameRunning(){
     
     
     if(objects.get(i) instanceof Bullet){
-      if(!objects.get(i).alive) {
+      
+      Bullet bullet = (Bullet)objects.get(i);
+      
+      if(!bullet.alive) {
         objects.remove(i);
       }
       
@@ -149,9 +152,12 @@ void gameRunning(){
       for(int j = 0; j < objects.size(); j++){
         
         if(objects.get(j) instanceof Enemy) {
-          if(objects.get(i).collides(objects.get(j))) {
+          
+          Enemy enemy = (Enemy)objects.get(j);
+          
+          if(bullet.collides(enemy)) {
             
-            objects.get(j).respawn();
+            enemy.respawn();
             score.updateScore(10);
           }
         }
@@ -161,20 +167,20 @@ void gameRunning(){
     
     if(objects.get(i) instanceof Player) {
       
+      Player player = (Player)objects.get(i);
+      
       // Hit detection between player and enemy
       for(int j = 0; j < objects.size(); j++) { 
         if(objects.get(j) instanceof Enemy) {
                
-          if(objects.get(i).hitEnemy(objects.get(j))) {
-            objects.get(i).decreaseHealthBar(5);
-            
+          Enemy enemy = (Enemy)objects.get(j);
+          
+          if(player.collides(enemy)) {
+            player.decreaseHealthBar(5);
           }
         }
       }
     }
-    
-    
-    
   }  
 }
 

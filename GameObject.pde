@@ -27,16 +27,9 @@ class GameObject{
   }
   
   boolean collides(GameObject object) {
-    float distance = PVector.dist(object.pos, pos);
-    return(distance < object.radius + radius);
-  }
-  
-  boolean hitEnemy(GameObject object) {
     return false;
-  } 
-  
-  void decreaseHealthBar(int amount){
   }
+
   
   
 }

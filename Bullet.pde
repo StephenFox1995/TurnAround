@@ -6,7 +6,7 @@ class Bullet extends GameObject{
   Bullet(float x, float y, float theta) {
     this.colour = color(255, 0, 255);
     this.pos = new PVector(x, y);
-    this.radius = 2;
+    this.radius = 1;
     this.speed = 20.0f;
     this.theta = theta;
     this.alive = true;
@@ -35,6 +35,11 @@ class Bullet extends GameObject{
     }
   }
   
+  boolean collides(GameObject object) {
+    float distance = PVector.dist(object.pos, pos);
+    return(distance < object.radius + radius);
+  }
+  
   void kill() {
     alive = false;
   }
@@ -43,9 +48,10 @@ class Bullet extends GameObject{
     pushMatrix();
     fill(colour);
     stroke(colour);
+    strokeWeight(1);
     translate(pos.x, pos.y);
     rotate(theta);
-    ellipse(radius, radius, radius, radius);
+    line(0, -1, 0, 1);
     popMatrix();
   }
   

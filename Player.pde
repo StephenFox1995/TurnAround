@@ -67,7 +67,7 @@ class Player extends GameObject {
     rotate(theta);  
     
     stroke(colour);
-    strokeWeight(1);
+    
     fill(colour);
 
     //image(image, pos.x, pos.y);
@@ -89,11 +89,9 @@ class Player extends GameObject {
     
   }
   
-  boolean hitEnemy(GameObject object) {
+  boolean collides(GameObject object) {
     float distance = PVector.dist(object.pos, pos);
-    println("unce");
     return(distance < object.radius + radius);
-
   }
   
   // Decrease amount from heatlh bar
