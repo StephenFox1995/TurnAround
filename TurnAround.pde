@@ -22,25 +22,34 @@ import ddf.minim.effects.*;
 
 
 Minim minim;
+AudioPlayer audioPlayer;
+AudioInput input;
+
 ArrayList<GameObject> objects = new ArrayList<GameObject>();
 ArrayList<SplashScreen> splashScreenItems = new ArrayList<SplashScreen>();
+ArrayList<SplashScreen> gameOverSplashScreen = new ArrayList<SplashScreen>();
 
 boolean[] keys = new boolean[526];
 
 float centX;
 float centY;
+float buttonIndent;
 
 boolean splashScreen = true;
 boolean startGame;
 boolean gameOver;
 PImage splashScreenTitle;
+PImage howToPlayInfo;
 
 Score score = new Score();
 
-
 Difficulty difficulty;
+boolean devMode = false;
 
-boolean devMode = true;
+Player playerOne;
+Player playerTwo;
+
+
 
 boolean sketchFullScreen() {
   return !devMode;
@@ -48,21 +57,29 @@ boolean sketchFullScreen() {
 
 void setup() {
  
+ smooth();
+ background(0); 
+ 
  if(devMode) {
     size(800, 800);
   } else {
     size(displayWidth, displayHeight);
   } 
-
-  background(0);  
+  
   
   minim = new Minim(this);
   centX = width /2;
   centY = height/2;
+  buttonIndent = (centX - 110);
   
+  // Call these methods to set up
+  // all aspects of the game when it 
+  // is running
   setUpPlayerControllers();
   setUpSplashScreenAttributes();
   setupPowerUps();
+  setupPoint();
+  
   
   score.setPosition(width * 0.8f, height * 0.05f);
   objects.add(score);
@@ -83,7 +100,11 @@ void draw()
 // Display the splashscreen
 void splashScreen(){
   
-  image(splashScreenTitle, centX - 255, 50);
+  float buttonIndent = (centX - 110);
+  
+  image(splashScreenTitle, width/2 - 225, 50);
+  
+  
   for (int i = 0; i < splashScreenItems.size(); i++){
     
     splashScreenItems.get(i).display();
@@ -104,6 +125,20 @@ void splashScreen(){
       setupEnemies(difficulty);
       startGame();
     }
+    if(splashScreenItems.get(3).clicked()) {
+      fill(255);
+      stroke(255);
+      
+      // Hide these elements as we want to overlay
+      // how to play instructions.
+      splashScreenItems.get(0).setToHidden();
+      splashScreenItems.get(1).setToHidden();
+      splashScreenItems.get(2).setToHidden();
+      splashScreenItems.get(3).setToHidden();
+      
+      image(howToPlayInfo, width/2 - 250, height * 0.15f);
+      
+    }
   }
   
 }
@@ -115,15 +150,15 @@ void gameRunning(){
   
   switch(difficulty) {
     case Easy:
-      text("EASY", width * 0.05, 20);
+      text("EASY", width/2, 20);
       break;
       
     case Medium:
-      text("MEDIUM", width * 0.05, 20);
+      text("MEDIUM", width/2, 20);
       break;
     
     case Hard:
-      text("HARD", width * 0.05, 20);
+      text("HARD", width/2, 20);
       break;
   }
   
@@ -166,8 +201,24 @@ void gameRunning(){
     
     
     if(objects.get(i) instanceof Player) {
-      
+     
       Player player = (Player)objects.get(i);
+      
+      if(!player.isAlive()) {
+        setUpGameOverScreen();
+        startGame = false;
+        gameOver = true; 
+      }
+      
+      // Check if speed boost should be activated
+      if(player.speedBoost){
+        player.speedBoost();
+      }
+      
+      // Check if shield should be activated
+      if(player.shieldActive) {
+        player.activateShield();
+      }
       
       // Hit detection between player and enemy
       for(int j = 0; j < objects.size(); j++) { 
@@ -176,8 +227,42 @@ void gameRunning(){
           Enemy enemy = (Enemy)objects.get(j);
           
           if(player.collides(enemy)) {
-            player.decreaseHealthBar(5);
+            player.decreaseHealthBar(20);
+            enemy.respawn();
           }
+        }
+        // Hit detection for player and powerup
+        else if(objects.get(j) instanceof PowerUp) {
+          
+          PowerUp powerUp = (PowerUp)objects.get(j);
+          
+          if(player.collides(powerUp)) {
+            
+            // As player one if the one doing all the
+            // moving, chances are he will pick up
+            // majority of powerups, just apply
+            // powerups to all players.
+            if(player == playerOne) {
+              playerOne.activatePowerUp(powerUp.type);
+              playerTwo.activatePowerUp(powerUp.type);
+              powerUp.respawn();
+            }
+            else if(player == playerTwo) {
+              playerTwo.activatePowerUp(powerUp.type);
+              playerOne.activatePowerUp(powerUp.type);
+              powerUp.respawn();
+            } 
+          }
+        }
+        
+        else if(objects.get(j) instanceof Point) {
+          
+         Point point = (Point)objects.get(j);
+         
+         if(player.collides(point)) {
+           point.moveToNewPosition();
+           score.updateScore(50);
+         } 
         }
       }
     }
@@ -185,6 +270,18 @@ void gameRunning(){
 }
 
 void gameOver(){
+  background(0);
+  text("Score" + score.scoreValue, width/2, height * 0.4f);
+  
+  for(int i = 0; i < gameOverSplashScreen.size(); i++) {
+    gameOverSplashScreen.get(i).display();
+    gameOverSplashScreen.get(i).hover();
+    
+    if(gameOverSplashScreen.get(0).clicked()) {
+      // Restart the game
+    }
+  }
+  
 }
 
 void startGame() {
@@ -198,10 +295,11 @@ void setUpSplashScreenAttributes() {
   Button startGameButton;
   Button mediumGameButton;
   Button hardGameButton;
+  Button howToPlayButton;
   
-  float buttonIndent = (centX - 110);
   
   splashScreenTitle = loadImage("Images/Splashscreen/TurnAround.png");
+  howToPlayInfo = loadImage("Images/Splashscreen/HowToPlay.png");
   
   startGameButton = new Button(buttonIndent, height * 0.3f, "Images/Splashscreen/EasyButton.png");
   startGameButton.setImageOnHover("Images/Splashscreen/EasyHover.png");
@@ -214,6 +312,10 @@ void setUpSplashScreenAttributes() {
   hardGameButton = new Button(buttonIndent, height * 0.5f, "Images/Splashscreen/HardButton.png");
   hardGameButton.setImageOnHover("Images/SplashScreen/HardHover.png");
   splashScreenItems.add(hardGameButton);
+  
+  howToPlayButton = new Button(buttonIndent + 18, height * 0.6f, "Images/Splashscreen/HowToPlayButton.png");
+  howToPlayButton.setImageOnHover("Images/SplashScreen/HowToPlayHover.png");
+  splashScreenItems.add(howToPlayButton);
 }
 
 
@@ -223,7 +325,7 @@ void setupEnemies(Difficulty difficulty){
   
   int enemyCount = 0;
   
-  switch (difficulty){
+  switch (difficulty) {
     case Easy:
       enemyCount = 10;
       break;
@@ -249,10 +351,34 @@ void setupEnemies(Difficulty difficulty){
   }
 }
 
+void setupPoint() {
+  Point point = new Point();
+  objects.add(point);
+}
+
 
 void setupPowerUps() {
-  PowerUp powerUp = new PowerUp("Images/Game/powerup.png");
-  objects.add(powerUp);
+  // Power Up types
+  // 0 - Speed Increase
+  // 1 - Health
+  // 2 - Shield
+  
+  PowerUp speedPowerUp = new PowerUp("Images/Game/SpeedPowerUp.png", 0);
+  objects.add(speedPowerUp);
+  
+  PowerUp heartPowerUp = new PowerUp("Images/Game/HeartPowerUp.png", 1);
+  objects.add(heartPowerUp);
+  
+  PowerUp shieldPowerUp = new PowerUp("Images/Game/ShieldPowerUp.png", 2);
+  objects.add(shieldPowerUp);
+}
+
+void setUpGameOverScreen(){
+  Button playAgainButton = new Button(buttonIndent, height/2, "Images/GameOver/PlayAgain.png");
+  playAgainButton.setImageOnHover("Images/GameOver/PlayAgainHover.png");
+  
+  gameOverSplashScreen.add(playAgainButton);
+  
 }
 
 
@@ -292,12 +418,12 @@ char buttonNameToKey(XML xml, String buttonName) {
 void setUpPlayerControllers(){
   XML xml = loadXML("arcade.xml");
   XML[] children = xml.getChildren("player");
-  int gap = width / (children.length + 1);
   
-  for(int i = 0 ; i < children.length - 1 ; i ++) {
-    XML playerXML = children[i];
-    
-    Player p = new Player(0, "Images/Game/Player.png", playerXML);
-   objects.add(p);         
-  }
+  XML playerOneXML = children[0];
+  XML playerTwoXML = children[1];
+  
+  playerOne = new Player(0, "Images/Game/Player0.png", playerOneXML);
+  playerTwo = new Player(1, "Images/Game/Player1.png", playerTwoXML);
+  objects.add(playerOne);
+  objects.add(playerTwo);   
 }
