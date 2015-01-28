@@ -19,7 +19,6 @@ class PowerUp extends GameObject{
   
   
   void display(){
-    
     pushMatrix();
     fill(colour);
     stroke(colour);

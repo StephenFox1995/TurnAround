@@ -18,7 +18,7 @@ class Point extends GameObject {
       stroke(255);
       fill(255);
       image(image, pos.x, pos.y);
-      //rect(pos.x, pos.y, radius, radius);
+      
     }
   }
 

@@ -13,7 +13,7 @@ class Player extends GameObject {
   boolean allowedToMove;
   boolean allowedToShoot;
   
-  float healthBarLength = width * 0.2;
+  float healthBarLength;
   float healthBarPosition;
   
   float speedPowerUpTime = 5;
@@ -29,7 +29,8 @@ class Player extends GameObject {
   float ellapsed = 0.0f;
   float toPass = 1.0f / fireRate;
   
-
+  AudioPlayer audioPlayer;
+  AudioInput input;
   
     
   Player(){
@@ -56,6 +57,7 @@ class Player extends GameObject {
     this.button1 = button1;
     this.button2 = button2;
     this.image = loadImage(imageName);
+    audioPlayer = minim.loadFile("pew.wav");
     setupPlayer();
     
   }
@@ -75,18 +77,20 @@ class Player extends GameObject {
   }
   
   void setupPlayer() {
-      println("ss");
-      // If second player restrict
-      // movement so they cant move
-      // they can only shoot
+      
+      // Restrict movement for second player 
       if(index == 1) {
+        this.pos = new PVector(width/2, height/2);
         this.allowedToMove = false;
         this.allowedToShoot = true;
+        this.healthBarLength = width * 0.2;
         this.healthBarPosition = height * 0.1f;
       }
       else if(index == 0) {
+        this.pos = new PVector(width/2 - radius-10, height/2);
         this.allowedToMove = true;
         this.allowedToShoot = false;
+        this.healthBarLength = width * 0.2;
         this.healthBarPosition = height * 0.03f;
       }
   }
@@ -177,6 +181,10 @@ class Player extends GameObject {
     }
     if (checkKey(button1) && allowedToShoot) {
       if(ellapsed > toPass) {
+           
+           audioPlayer.play();
+           audioPlayer.rewind();
+           
            Bullet bullet = new Bullet(pos.x, 
                                       pos.y, 
                                       objects.get(1).theta);
