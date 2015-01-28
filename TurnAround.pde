@@ -38,8 +38,12 @@ float buttonIndent;
 boolean splashScreen = true;
 boolean startGame;
 boolean gameOver;
+
 PImage splashScreenTitle;
+PImage gameOverTitle;
+
 PImage howToPlayInfo;
+boolean showGameInfo = false;
 
 Score score = new Score();
 
@@ -50,7 +54,6 @@ Player playerOne;
 Player playerTwo;
 
 
-
 boolean sketchFullScreen() {
   return !devMode;
 }
@@ -59,6 +62,9 @@ void setup() {
  
  smooth();
  background(0); 
+ minim = new Minim(this);
+ audioPlayer = minim.loadFile("soundtrack.mp3");
+ audioPlayer.loop();
  
  if(devMode) {
     size(800, 800);
@@ -67,7 +73,7 @@ void setup() {
   } 
   
   
-  minim = new Minim(this);
+  
   centX = width /2;
   centY = height/2;
   buttonIndent = (centX - 110);
@@ -79,10 +85,7 @@ void setup() {
   setUpSplashScreenAttributes();
   setupPowerUps();
   setupPoint();
-  
-  
-  score.setPosition(width * 0.8f, height * 0.05f);
-  objects.add(score);
+  setUpScore();
 }
 
 
@@ -100,10 +103,16 @@ void draw()
 // Display the splashscreen
 void splashScreen(){
   
+  background(0);
   float buttonIndent = (centX - 110);
+  
   
   image(splashScreenTitle, width/2 - 225, 50);
   
+  if(showGameInfo) {
+    image(howToPlayInfo, width/2 - 250, height * 0.15f);
+     splashScreenItems.get(4).setToUnHidden();
+  }
   
   for (int i = 0; i < splashScreenItems.size(); i++){
     
@@ -135,13 +144,23 @@ void splashScreen(){
       splashScreenItems.get(1).setToHidden();
       splashScreenItems.get(2).setToHidden();
       splashScreenItems.get(3).setToHidden();
-      
-      image(howToPlayInfo, width/2 - 250, height * 0.15f);
+     
+      showGameInfo = true; 
       
     }
+    if(splashScreenItems.get(4).clicked()) {
+      
+      splashScreenItems.get(0).setToUnHidden();
+      splashScreenItems.get(1).setToUnHidden();
+      splashScreenItems.get(2).setToUnHidden();
+      splashScreenItems.get(3).setToUnHidden();
+      splashScreenItems.get(4).setToHidden();
+      
+      showGameInfo = false;
+    }
   }
-  
 }
+
 
 // Implement gameplay here
 void gameRunning(){
@@ -150,15 +169,15 @@ void gameRunning(){
   
   switch(difficulty) {
     case Easy:
-      text("EASY", width/2, 20);
+      text("EASY", width/2, 40);
       break;
       
     case Medium:
-      text("MEDIUM", width/2, 20);
+      text("MEDIUM", width/2, 40);
       break;
     
     case Hard:
-      text("HARD", width/2, 20);
+      text("HARD", width/2, 40);
       break;
   }
   
@@ -239,7 +258,7 @@ void gameRunning(){
           if(player.collides(powerUp)) {
             
             // As player one if the one doing all the
-            // moving, chances are he will pick up
+            // moving, chances are he/ she will pick up
             // majority of powerups, just apply
             // powerups to all players.
             if(player == playerOne) {
@@ -270,15 +289,48 @@ void gameRunning(){
 }
 
 void gameOver(){
+  
   background(0);
-  text("Score" + score.scoreValue, width/2, height * 0.4f);
+  
+  int highscore;
+  
+  image(gameOverTitle,  width/2 - 225, 50);
+  
+  highscore = score.readScoreFromFile("HighscoreText.txt");
+  
+  // If new highscore, save it to file
+  if(score.scoreValue > highscore) {
+    score.saveScoreToFile("HighscoreText.txt");
+    text("Highscore: " + score.scoreValue, buttonIndent + 25, height * 0.45f);
+  }
+  else {
+    text("Highscore: " + highscore, buttonIndent + 25, height * 0.45f);
+  }
+  
+  text("Score: " + score.scoreValue, buttonIndent + 40, height * 0.4f);
+  
   
   for(int i = 0; i < gameOverSplashScreen.size(); i++) {
     gameOverSplashScreen.get(i).display();
     gameOverSplashScreen.get(i).hover();
     
     if(gameOverSplashScreen.get(0).clicked()) {
-      // Restart the game
+       
+       // Reset all aspects of the game
+       // User will be brought back to splash screen
+       objects.clear();
+       splashScreenItems.clear();
+       gameOverSplashScreen.clear();
+       
+       setUpPlayerControllers();
+       setUpSplashScreenAttributes();
+       setupPowerUps();
+       setupPoint();
+       setUpScore();
+       
+       splashScreen = true;
+       gameOver = false;
+       startGame = false;               
     }
   }
   
@@ -296,6 +348,7 @@ void setUpSplashScreenAttributes() {
   Button mediumGameButton;
   Button hardGameButton;
   Button howToPlayButton;
+  Button exitGameInfoButton;
   
   
   splashScreenTitle = loadImage("Images/Splashscreen/TurnAround.png");
@@ -316,6 +369,13 @@ void setUpSplashScreenAttributes() {
   howToPlayButton = new Button(buttonIndent + 18, height * 0.6f, "Images/Splashscreen/HowToPlayButton.png");
   howToPlayButton.setImageOnHover("Images/SplashScreen/HowToPlayHover.png");
   splashScreenItems.add(howToPlayButton);
+  
+  exitGameInfoButton = new Button(width * 0.2f, height * 0.16f, "Images/Splashscreen/X.png");
+  exitGameInfoButton.setImageOnHover("Images/SplashScreen/XHover.png");
+  exitGameInfoButton.w = 45;
+  exitGameInfoButton.h = 49;
+  splashScreenItems.add(exitGameInfoButton);
+  exitGameInfoButton.setToHidden();
 }
 
 
@@ -327,15 +387,15 @@ void setupEnemies(Difficulty difficulty){
   
   switch (difficulty) {
     case Easy:
-      enemyCount = 10;
+      enemyCount = 8;
       break;
       
     case Medium:
-      enemyCount = 20;
+      enemyCount = 15;
       break;
       
     case Hard:
-      enemyCount = 30;
+      enemyCount = 22;
       break;
     
     default:
@@ -362,7 +422,6 @@ void setupPowerUps() {
   // 0 - Speed Increase
   // 1 - Health
   // 2 - Shield
-  
   PowerUp speedPowerUp = new PowerUp("Images/Game/SpeedPowerUp.png", 0);
   objects.add(speedPowerUp);
   
@@ -374,13 +433,19 @@ void setupPowerUps() {
 }
 
 void setUpGameOverScreen(){
-  Button playAgainButton = new Button(buttonIndent, height/2, "Images/GameOver/PlayAgain.png");
+  Button playAgainButton = new Button(buttonIndent, height * 0.2, "Images/GameOver/PlayAgain.png");
   playAgainButton.setImageOnHover("Images/GameOver/PlayAgainHover.png");
-  
   gameOverSplashScreen.add(playAgainButton);
   
+  gameOverTitle = loadImage("Images/GameOver/GameOver.png");
 }
 
+
+void setUpScore() {
+  score.setPosition(width * 0.8f, height * 0.05f);
+  score.scoreValue = 0;
+  objects.add(score);
+}
 
 
 
@@ -424,6 +489,7 @@ void setUpPlayerControllers(){
   
   playerOne = new Player(0, "Images/Game/Player0.png", playerOneXML);
   playerTwo = new Player(1, "Images/Game/Player1.png", playerTwoXML);
+  
   objects.add(playerOne);
   objects.add(playerTwo);   
 }

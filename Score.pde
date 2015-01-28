@@ -4,6 +4,7 @@ class Score extends GameObject {
   String scoreText;
   int scoreValue;
   String[] scoreFromFile;
+  int fileContents = 0;
   
   Score(){
     this(0, 0, "Score:", 0);
@@ -39,17 +40,22 @@ class Score extends GameObject {
     pos.y = y;
   }
   
-  void readScoreFromFile(String filename) {
+  int readScoreFromFile(String filename) {
     String filePath;
     String[] scoreFromFile;
     
     // Check if file exists
     if((filePath = checkFileExists(filename)) != null) {
+      
       scoreFromFile = loadStrings(filePath);
+      fileContents = Integer.parseInt(scoreFromFile[0]);
+      return fileContents;
     } 
     else {
       // File doesn't exist so create it
+      // and then just return 0
       createFile(filename);  
+      return 0;
     }
     
   }
@@ -113,7 +119,7 @@ class Score extends GameObject {
   // the user is running.
   // Filepaths are arbitrary for each os.
   // Mac OS X - /Users/user/Library/TurnAround/filename
-  // Windows - C:/ProgramData/TurnAround/filename
+  // Windows - C:/ProgramData/TurnAround/filenam
   String getFilePath() {
     String filePath = "";
     String currentOS = System.getProperty("os.name");
@@ -122,16 +128,18 @@ class Score extends GameObject {
     // operating system 
     if(currentOS.toLowerCase().contains("window")) {
         filePath = "C:/ProgramData/TurnAround/";
+        
         return filePath;
     }
     else if(currentOS.toLowerCase().contains("mac")) {
         String user = System.getProperty("user.name");
-        filePath = "/Users/" + user + "/Library/TurnAround/";  
-         return filePath;   
+        filePath = "/Users/" + user + "/Library/TurnAround/";
+        
+        return filePath;   
     } else {
-        return "";
+        return filePath;
     }
-    // Return the filepath we want to access
+    
     
   }
   
