@@ -27,7 +27,7 @@ class Enemy extends GameObject{
     switch(sideToSpawn){
       //0 - North
       case 0:
-        this.pos = new PVector(random(w, width - 2), random(-height * 2, 0));
+        this.pos = new PVector(random(w, width - radius), random(-height * 2, 0));
         directionToMove = Direction.South;
         break;
      
@@ -45,22 +45,30 @@ class Enemy extends GameObject{
      
      //3 - West
      case 3:
-     this.pos = new PVector(random(-width*2, 0), random(h, height));
-     directionToMove = Direction.East;
-     break;
+       this.pos = new PVector(random(-width*2, 0), random(h, height));
+       directionToMove = Direction.East;
+       break;
     }
   }
   
   void update() {
-    // If offscreen, kill!
+    // If offscreen, respawn.
     if (directionToMove == Direction.South && pos.y > height) {
-      kill();
-    } else if(directionToMove == Direction.North && pos.y < 0){
-      kill();
-    } else if (directionToMove == Direction.East && pos.x > width) {
-      kill();
-    } else if(directionToMove == Direction.West && pos.x < 0) {
-      kill();
+      println("Respawn South");
+      respawn();
+    }
+    if(directionToMove == Direction.North && pos.y < 0){
+      println("Respawn North");
+      respawn();
+    }
+    if (directionToMove == Direction.East && pos.x > width) {
+      println("Respawn North");
+        respawn();
+        
+    }
+    if(directionToMove == Direction.West && pos.x < 0) {
+      println("Respawn West");
+      respawn();
     }
   }
   

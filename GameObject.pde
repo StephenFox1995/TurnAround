@@ -1,4 +1,5 @@
 class GameObject{
+  
   PVector pos;
   float w;
   float h;
@@ -9,6 +10,7 @@ class GameObject{
   float timeDelta = 1.0f/ 60.0f;
   float health;
   float radius;
+  PImage image;
   
   void display() {
   }

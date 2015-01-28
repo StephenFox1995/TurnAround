@@ -15,14 +15,14 @@ class Score extends GameObject {
     this.scoreValue = value;
     this.title = title;
     
-    // ScoreText is the title you give it and the actual score value given
+    // ScoreText is the title e.g. "Score" and the actual score value given
     this.scoreText = title + " " + scoreValue;
   }
   
   void display() {
     fill(colour);
     stroke(colour);
-    textSize(15);
+    textSize(20);
     text(scoreText, pos.x, pos.y);
   }
   
@@ -37,7 +37,6 @@ class Score extends GameObject {
   void setPosition(float x, float y) {
     pos.x = x;
     pos.y = y;
-    
   }
   
   void readScoreFromFile(String filename) {
@@ -123,13 +122,17 @@ class Score extends GameObject {
     // operating system 
     if(currentOS.toLowerCase().contains("window")) {
         filePath = "C:/ProgramData/TurnAround/";
+        return filePath;
     }
     else if(currentOS.toLowerCase().contains("mac")) {
         String user = System.getProperty("user.name");
-        filePath = "/Users/" + user + "/Library/TurnAround/";     
+        filePath = "/Users/" + user + "/Library/TurnAround/";  
+         return filePath;   
+    } else {
+        return "";
     }
     // Return the filepath we want to access
-    return filePath;
+    
   }
   
   

@@ -6,7 +6,7 @@ class Bullet extends GameObject{
   Bullet(float x, float y, float theta) {
     this.colour = color(255, 0, 255);
     this.pos = new PVector(x, y);
-    this.radius = 1;
+    this.radius = 2;
     this.speed = 20.0f;
     this.theta = theta;
     this.alive = true;
@@ -51,7 +51,7 @@ class Bullet extends GameObject{
     strokeWeight(1);
     translate(pos.x, pos.y);
     rotate(theta);
-    line(0, -1, 0, 1);
+    line(0, -3, 0, 3);
     popMatrix();
   }
   

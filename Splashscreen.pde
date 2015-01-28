@@ -4,7 +4,7 @@ class SplashScreen{
   float w;
   float h;
   color colour;
-  float speed;
+  boolean hidden;
   
   void display(){ 
   }
@@ -17,5 +17,13 @@ class SplashScreen{
   boolean clicked(){
      return false;
    }
+   
+  // Hide element
+  void setToHidden() {
+  }
+  
+  // Unhide element
+  void setToUnHidden() {
+  }
 }
 
