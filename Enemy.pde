@@ -54,24 +54,19 @@ class Enemy extends GameObject{
   void update() {
     // If offscreen, respawn.
     if (directionToMove == Direction.South && pos.y > height) {
-      println("Respawn South");
       respawn();
     }
     if(directionToMove == Direction.North && pos.y < 0){
-      println("Respawn North");
       respawn();
     }
     if (directionToMove == Direction.East && pos.x > width) {
-      println("Respawn North");
-        respawn();
+      respawn();
         
     }
     if(directionToMove == Direction.West && pos.x < 0) {
-      println("Respawn West");
       respawn();
     }
   }
-  
   
   
   // Respawns enemy to new co-ordinates
@@ -102,7 +97,7 @@ class Enemy extends GameObject{
       pos.y -= speed;
     } else if(directionToMove == Direction.East) {
       pos.x += speed;
-    } else if(directionToMove == Direction.North) {
+    } else if(directionToMove == Direction.West) {
       pos.x -= speed;
     }
   }
