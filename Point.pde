@@ -6,7 +6,7 @@ class Point extends GameObject {
   Point() {
     this.radius = 30;
     this.image = loadImage("Images/Game/Point.png");
-    this.pos = new PVector(random(0, width - radius), random(0, height - radius));
+    this.pos = new PVector(random(0, width - radius), random(height * 0.03f, height - radius));
   }
 
   void display() {
